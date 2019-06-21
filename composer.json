@@ -1,0 +1,37 @@
+{
+    "name": "shoot/psalm-plugin",
+    "description": "Provides static analysis for Shoot models and presenters",
+    "type": "psalm-plugin",
+    "keywords": [
+        "shoot",
+        "twig",
+        "plugin",
+        "static",
+        "analysis",
+        "psalm",
+        "psalm-plugin"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Victor Welling",
+            "email": "victorwelling@gmail.com"
+        }
+    ],
+    "require": {
+        "ext-simplexml": "*",
+        "php": "^7.2",
+        "shoot/shoot": "^3.1",
+        "vimeo/psalm": "^3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Shoot\\PsalmPlugin\\": "src/"
+        }
+    },
+    "extra": {
+        "psalm": {
+            "pluginClass": "Shoot\\PsalmPlugin\\PluginEntryPoint"
+        }
+    }
+}
