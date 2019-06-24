@@ -7,7 +7,7 @@ use Psalm\Plugin\PluginEntryPointInterface;
 use Psalm\Plugin\RegistrationInterface;
 use ReflectionClass;
 use ReflectionException;
-use Shoot\PsalmPlugin\Hooks\PresentationModels;
+use Shoot\PsalmPlugin\Analyzers\PresentationModelAnalyzer;
 use SimpleXMLElement;
 
 final class PluginEntryPoint implements PluginEntryPointInterface
@@ -20,7 +20,7 @@ final class PluginEntryPoint implements PluginEntryPointInterface
      */
     public function __invoke(RegistrationInterface $api, ?SimpleXMLElement $config = null): void
     {
-        $this->registerHooks($api, PresentationModels::class);
+        $this->registerHooks($api, PresentationModelAnalyzer::class);
     }
 
     /**
@@ -33,6 +33,7 @@ final class PluginEntryPoint implements PluginEntryPointInterface
     {
         $class = new ReflectionClass($className);
 
+        /** @psalm-suppress UnresolvableInclude */
         require_once $class->getFileName();
 
         $api->registerHooksFromClass($className);
