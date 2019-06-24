@@ -22,7 +22,7 @@
         "ext-simplexml": "*",
         "php": "^7.2",
         "shoot/shoot": "^3.1",
-        "vimeo/psalm": "^3.4"
+        "vimeo/psalm": "^3.2"
     },
     "autoload": {
         "psr-4": {
