@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Shoot\PsalmPlugin\Issues;
 
-use Psalm\Issue\PropertyIssue;
+use Psalm\Issue\PluginIssue;
 
-final class NonProtectedPresentationModelField extends PropertyIssue
+final class NonProtectedPresentationModelField extends PluginIssue
 {
 }
