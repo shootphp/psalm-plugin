@@ -12,7 +12,7 @@ use Psalm\Plugin\Hook\AfterClassLikeAnalysisInterface;
 use Psalm\StatementsSource;
 use Psalm\Storage\ClassLikeStorage;
 use Psalm\Storage\PropertyStorage;
-use Shoot\PsalmPlugin\Issues\NonProtectedProperty;
+use Shoot\PsalmPlugin\Issues\NonProtectedPresentationModelField;
 use Shoot\Shoot\PresentationModel;
 
 final class PresentationModelAnalyzer implements AfterClassLikeAnalysisInterface
@@ -40,8 +40,8 @@ final class PresentationModelAnalyzer implements AfterClassLikeAnalysisInterface
         /** @var PropertyStorage $property */
         foreach ($class->properties as $propertyId => $property) {
             if ($property->location !== null && $property->visibility !== ClassLikeAnalyzer::VISIBILITY_PROTECTED) {
-                $issue = new NonProtectedProperty(
-                    "'{$propertyId}' should be protected, to preserve the presentation model's immutability",
+                $issue = new NonProtectedPresentationModelField(
+                    "'{$propertyId}' should be `protected` to preserve the presentation model's immutability, while allowing access from the PresentationModel base class",
                     $property->location,
                     $propertyId
                 );

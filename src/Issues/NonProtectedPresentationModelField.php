@@ -5,6 +5,6 @@ namespace Shoot\PsalmPlugin\Issues;
 
 use Psalm\Issue\PropertyIssue;
 
-final class NonProtectedProperty extends PropertyIssue
+final class NonProtectedPresentationModelField extends PropertyIssue
 {
 }
