@@ -12,7 +12,8 @@ use Psalm\Plugin\Hook\AfterClassLikeAnalysisInterface;
 use Psalm\StatementsSource;
 use Psalm\Storage\ClassLikeStorage;
 use Psalm\Storage\PropertyStorage;
-use Shoot\PsalmPlugin\Issues\NonProtectedPresentationModelField;
+use Shoot\PsalmPlugin\Issues\InvalidPresentationModelFieldCasing;
+use Shoot\PsalmPlugin\Issues\InvalidPresentationModelFieldVisibility;
 use Shoot\Shoot\PresentationModel;
 
 final class PresentationModelAnalyzer implements AfterClassLikeAnalysisInterface
@@ -38,17 +39,23 @@ final class PresentationModelAnalyzer implements AfterClassLikeAnalysisInterface
         }
 
         /** @var PropertyStorage $property */
-        foreach ($class->properties as $propertyId => $property) {
-            if ($property->location !== null && $property->visibility !== ClassLikeAnalyzer::VISIBILITY_PROTECTED) {
-                $issue = new NonProtectedPresentationModelField(
-                    "'{$propertyId}' should be `protected` to preserve the presentation model's immutability, while allowing access from the PresentationModel base class",
-                    $property->location,
-                    $propertyId
-                );
+        foreach ($class->properties as $name => $property) {
+            if ($property->location === null) {
+                continue;
+            }
 
-                if (!IssueBuffer::accepts($issue, $class->suppressed_issues)) {
-                    break;
-                };
+            if (preg_match('/^[a-z_\x80-\xff][a-z0-9_\x80-\xff]*$/S', $name) !== 1) {
+                IssueBuffer::accepts(new InvalidPresentationModelFieldCasing(
+                    "'{$name}' must use `snake_casing`, as per Twig's coding standards",
+                    $property->location
+                ));
+            }
+
+            if ($property->visibility !== ClassLikeAnalyzer::VISIBILITY_PROTECTED) {
+                IssueBuffer::accepts(new InvalidPresentationModelFieldVisibility(
+                    "'{$name}' must be `protected` to preserve the presentation model's immutability, while allowing access from the PresentationModel base class",
+                    $property->location
+                ));
             }
         }
     }

@@ -5,6 +5,6 @@ namespace Shoot\PsalmPlugin\Issues;
 
 use Psalm\Issue\PluginIssue;
 
-final class NonProtectedPresentationModelField extends PluginIssue
+final class InvalidPresentationModelFieldVisibility extends PluginIssue
 {
 }
