@@ -48,14 +48,14 @@ final class PresentationModelAnalyzer implements AfterClassLikeAnalysisInterface
                 IssueBuffer::accepts(new InvalidPresentationModelFieldCasing(
                     "'{$name}' must use `snake_casing`, as per Twig's coding standards",
                     $property->location
-                ));
+                ), $class->suppressed_issues);
             }
 
             if ($property->visibility !== ClassLikeAnalyzer::VISIBILITY_PROTECTED) {
                 IssueBuffer::accepts(new InvalidPresentationModelFieldVisibility(
                     "'{$name}' must be `protected` to preserve the presentation model's immutability, while allowing access from the PresentationModel base class",
                     $property->location
-                ));
+                ), $class->suppressed_issues);
             }
         }
     }
