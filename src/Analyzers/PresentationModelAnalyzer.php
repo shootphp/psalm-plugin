@@ -3,14 +3,10 @@ declare(strict_types=1);
 
 namespace Shoot\PsalmPlugin\Analyzers;
 
-use PhpParser\Node\Stmt\ClassLike;
-use Psalm\Codebase;
-use Psalm\FileManipulation;
 use Psalm\Internal\Analyzer\ClassLikeAnalyzer;
 use Psalm\IssueBuffer;
-use Psalm\Plugin\Hook\AfterClassLikeAnalysisInterface;
-use Psalm\StatementsSource;
-use Psalm\Storage\ClassLikeStorage;
+use Psalm\Plugin\EventHandler\AfterClassLikeAnalysisInterface;
+use Psalm\Plugin\EventHandler\Event\AfterClassLikeAnalysisEvent;
 use Psalm\Storage\PropertyStorage;
 use Shoot\PsalmPlugin\Issues\InvalidPresentationModelFieldCasing;
 use Shoot\PsalmPlugin\Issues\InvalidPresentationModelFieldVisibility;
@@ -18,28 +14,16 @@ use Shoot\Shoot\PresentationModel;
 
 final class PresentationModelAnalyzer implements AfterClassLikeAnalysisInterface
 {
-    /**
-     * @param ClassLike          $statement
-     * @param ClassLikeStorage   $class
-     * @param StatementsSource   $source
-     * @param Codebase           $codebase
-     * @param FileManipulation[] $fileManipulations
-     *
-     * @return void
-     */
-    public static function afterStatementAnalysis(
-        ClassLike $statement,
-        ClassLikeStorage $class,
-        StatementsSource $source,
-        Codebase $codebase,
-        array &$fileManipulations = []
-    ): void {
-        if (!$codebase->classExtends($class->name, PresentationModel::class)) {
+    public static function afterStatementAnalysis(AfterClassLikeAnalysisEvent $event): void {
+        $codebase = $event->getCodebase();
+        $classLike = $event->getClasslikeStorage();
+
+        if (!$codebase->classExtends($classLike->name, PresentationModel::class)) {
             return;
         }
 
         /** @var PropertyStorage $property */
-        foreach ($class->properties as $name => $property) {
+        foreach ($classLike->properties as $name => $property) {
             if ($property->location === null) {
                 continue;
             }
@@ -48,14 +32,14 @@ final class PresentationModelAnalyzer implements AfterClassLikeAnalysisInterface
                 IssueBuffer::accepts(new InvalidPresentationModelFieldCasing(
                     "'{$name}' must use `snake_casing`, as per Twig's coding standards",
                     $property->location
-                ), $class->suppressed_issues);
+                ), $classLike->suppressed_issues);
             }
 
             if ($property->visibility !== ClassLikeAnalyzer::VISIBILITY_PROTECTED) {
                 IssueBuffer::accepts(new InvalidPresentationModelFieldVisibility(
                     "'{$name}' must be `protected` to preserve the presentation model's immutability, while allowing access from the PresentationModel base class",
                     $property->location
-                ), $class->suppressed_issues);
+                ), $classLike->suppressed_issues);
             }
         }
     }
