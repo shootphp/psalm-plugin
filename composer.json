@@ -20,7 +20,7 @@
     ],
     "require": {
         "ext-simplexml": "*",
-        "php": "^7.2",
+        "php": "^7.2|^8.0",
         "shoot/shoot": "^3.1",
         "vimeo/psalm": "^3.2"
     },
