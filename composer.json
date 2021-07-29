@@ -19,8 +19,8 @@
         }
     ],
     "require": {
+        "php": "^7.2 || ^8.0",
         "ext-simplexml": "*",
-        "php": "^7.2|^8.0",
         "shoot/shoot": "^3.2",
         "vimeo/psalm": "^4.8"
     },
